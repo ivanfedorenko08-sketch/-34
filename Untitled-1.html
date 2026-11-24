@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АкваМастер — Интернет-магазин сантехники</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); }
+        header {
+            background: var(--primary); color: #fff; padding: 16px 24px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        header h1 { margin: 0; font-size: 20px; }
+        .container { max-width: 1150px; margin: 20px auto; padding: 0 16px; }
+        .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .tab-btn {
+            padding: 10px 16px; border: 1px solid var(--border); background: var(--card);
+            border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text);
+        }
+        .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .section { display: none; background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+        .section.active { display: block; }
+        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+        input, select {
+            padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px;
+        }
+        button {
+            padding: 9px 15px; border: none; border-radius: 6px; background: var(--primary);
+            color: #fff; font-weight: 600; cursor: pointer;
+        }
+        button:hover { background: var(--primary-dark); }
+        button.secondary { background: #475569; }
+        button.success { background: var(--success); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+        .product-card {
+            border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+            display: flex; flex-direction: column; justify-content: space-between; background: #fff;
+        }
+        .badge {
+            display: inline-block; background: #e0f2fe; color: var(--primary-dark);
+            padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-bottom: 6px;
+        }
+        .price { font-size: 18px; font-weight: 700; margin: 8px 0; }
+        .muted { color: var(--muted); font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: 14px; }
+        th { background: #f8fafc; }
+        .alert {
+            padding: 12px; border-radius: 6px; background: #dcfce7; color: #166534;
+            margin-top: 12px; display: none; font-weight: 500;
+        }
+        .box { border: 1px solid var(--border); padding: 16px; border-radius: 8px; background: #f8fafc; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚿 АкваМастер — Магазин сантехники</h1>
+    <div>Студент: Федоренко И.М. (ИСП-34) | <span id="cartBadge">Корзина: 0 шт. (0 руб.)</span></div>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('catalog', this)">Каталог и подбор (НФ-1)</button>
+        <button class="tab-btn" onclick="showTab('kit', this)">Конструктор комплекта (НФ-2)</button>
+        <button class="tab-btn" onclick="showTab('calc', this)">Калькулятор материалов (НФ-3)</button>
+        <button class="tab-btn" onclick="showTab('cart', this)">Корзина и услуги (НФ-4 / НФ-5)</button>
+    </div>
+
+    <!-- 1. КАТАЛОГ И ПОДБОР ПО ЗАМЕРАМ (НФ-1) -->
+    <div id="catalog" class="section active">
+        <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="Поиск по названию..." oninput="renderCatalog()">
+            <select id="specFilter" onchange="renderCatalog()">
+                <option value="">НФ-1: Все размеры / подводки</option>
+                <option value="G 1/2">Подводка G 1/2 (150 мм)</option>
+                <option value="50 мм">Диаметр 50 мм</option>
+                <option value="Универсальный">Универсальный</option>
+            </select>
+            <button class="secondary" onclick="resetFilters()">Сбросить</button>
+        </div>
+        <div class="grid" id="productGrid"></div>
+    </div>
+
+    <!-- 2. КОНСТРУКТОР КОМПЛЕКТА САНУЗЛА (НФ-2) -->
+    <div id="kit" class="section">
+        <h3>НФ-2. Конструктор комплекта санузла (Скидка 10 %)</h3>
+        <p class="muted">Автоматическая проверка совместимости резьбового соединения и расчёт комплектной цены.</p>
+        <div class="box">
+            <p><strong>Состав комплекта (стандарт подключения G 1/2):</strong></p>
+            <ul>
+                <li>Смеситель для раковины — 4 500 руб.</li>
+                <li>Керамическая раковина — 7 800 руб.</li>
+                <li>Сифон бутылочный — 950 руб.</li>
+            </ul>
+            <p>Обычная цена: <s>13 250 руб.</s> → <strong>Цена со скидкой 10 %: 11 925 руб.</strong></p>
+            <button class="success" onclick="addCompatibleKit()">Добавить комплект в корзину со скидкой 10%</button>
+        </div>
+        <div id="kitAlert" class="alert"></div>
+    </div>
+
+    <!-- 3. КАЛЬКУЛЯТОР МАТЕРИАЛОВ (НФ-3) -->
+    <div id="calc" class="section">
+        <h3>НФ-3. Калькулятор расходных материалов</h3>
+        <p class="muted">Расчёт количества труб ПВХ (длина 1 шт. = 2 м) с обязательным отраслевым запасом 10 %.</p>
+        <div class="box">
+            <div class="toolbar">
+                <label>Длина трассы (метры):</label>
+                <input type="number" id="metersInput" value="7" min="1" step="0.5">
+                <button onclick="calculateMaterials()">Рассчитать и добавить в корзину</button>
+            </div>
+            <div id="calcOutput" class="muted">Введите метраж и нажмите «Рассчитать».</div>
+        </div>
+    </div>
+
+    <!-- 4. КОРЗИНА, ЗАПИСЬ НА УСЛУГИ (НФ-4) И УВЕДОМЛЕНИЯ (НФ-5) -->
+    <div id="cart" class="section">
+        <h3>Оформление заказа и запись на услуги (НФ-4)</h3>
+        <table>
+            <thead>
+                <tr><th>Наименование</th><th>Кол-во</th><th>Скидка</th><th>Сумма</th></tr>
+            </thead>
+            <tbody id="cartBody"></tbody>
+        </table>
+
+        <div class="box" style="margin-top: 16px;">
+            <div class="toolbar">
+                <label><strong>Услуга мастера (НФ-4):</strong></label>
+                <select id="serviceSelect" onchange="renderCart()">
+                    <option value="0">Без услуги</option>
+                    <option value="0">Замер санузла — завтра 10:00 (Бесплатно)</option>
+                    <option value="2500">Монтаж сантехники — завтра 14:00 (+2 500 руб.)</option>
+                    <option value="1000">Вывоз старой сантехники — послезавтра 16:00 (+1 000 руб.)</option>
+                </select>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <strong style="font-size:18px;" id="totalPriceLabel">Итого: 0 руб.</strong>
+                <div>
+                    <button class="secondary" onclick="clearCart()">Очистить</button>
+                    <button class="success" onclick="checkout()">Оформить заказ</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="box">
+            <h4>НФ-5. Подписка на снижение цены / поступление товара</h4>
+            <div class="toolbar">
+                <input type="email" id="subEmail" placeholder="Ваш e-mail (например, user@mail.ru)">
+                <select id="subProduct">
+                    <option value="Ванна акриловая 170x70">Ванна акриловая 170×70 (ожидается)</option>
+                    <option value="Смеситель для раковины">Смеситель для раковины (желаемая цена)</option>
+                </select>
+                <button onclick="subscribeNotify()">Подписаться</button>
+            </div>
+            <div id="subAlert" class="alert"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const catalog = [
+        { id: 1, name: "Смеситель для раковины", category: "Смесители", spec: "G 1/2", price: 4500, stock: 8 },
+        { id: 2, name: "Душевая лейка", category: "Душ", spec: "G 1/2", price: 1200, stock: 15 },
+        { id: 3, name: "Керамическая раковина", category: "Раковины", spec: "G 1/2", price: 7800, stock: 4 },
+        { id: 4, name: "Сифон бутылочный", category: "Комплектующие", spec: "G 1/2", price: 950, stock: 12 },
+        { id: 5, name: "Труба ПВХ (2 м)", category: "Трубы", spec: "50 мм", price: 650, stock: 30 },
+        { id: 6, name: "Герметик силиконовый", category: "Расходники", spec: "Универсальный", price: 480, stock: 20 }
+    ];
+
+    let cart = [];
+
+    function showTab(tabId, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function renderCatalog() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const spec = document.getElementById('specFilter').value;
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = '';
+
+        catalog
+            .filter(p => p.name.toLowerCase().includes(q) && (spec === '' || p.spec === spec))
+            .forEach(p => {
+                grid.innerHTML += `
+                    <div class="product-card">
